@@ -7,6 +7,7 @@ import com.household.household.enums.WashingType;
 import com.household.household.enums.WashingMachineLoadingType;
 import com.household.household.exception.ExcelImportException;
 import com.household.household.repository.WashingMachineDataRepository;
+import com.household.household.service.DuplicateDetectionService;
 import com.household.household.service.WashingMachineDataImportService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ import java.util.Set;
 public class WashingMachineDataImportServiceImpl implements WashingMachineDataImportService {
 
     private final WashingMachineDataRepository washingMachineDataRepository;
+    private final DuplicateDetectionService duplicateDetectionService;
 
     private static final String[] EXPECTED_HEADERS = {
             "year",
@@ -95,9 +97,9 @@ public class WashingMachineDataImportServiceImpl implements WashingMachineDataIm
                     wmData = normalize(wmData);
 
                     /*
-                     * Generate Hash from raw row
+                     * Generate Hash from normalized entity
                      */
-                    String rowHash = generateRowHash(row);
+                    String rowHash = duplicateDetectionService.generateRowHash(wmData);
                     wmData.setRowHash(rowHash);
 
                     /*
@@ -384,48 +386,6 @@ public class WashingMachineDataImportServiceImpl implements WashingMachineDataIm
         return value.stripTrailingZeros();
     }
 
-    /*
-     * Generate Row Hash from raw Excel row
-     */
-    private String generateRowHash(Row row) {
-        if (row == null) {
-            return null;
-        }
-
-        StringBuilder signature = new StringBuilder();
-        int maxCol = Math.max(7, row.getLastCellNum());
-        DataFormatter formatter = new DataFormatter();
-        
-        for (int i = 0; i < maxCol; i++) {
-            Cell cell = row.getCell(i);
-            String rawValue = cell != null ? formatter.formatCellValue(cell) : "";
-            signature.append(rawValue).append("|");
-        }
-
-        return generateSHA256(signature.toString());
-    }
-
-    private String generateSHA256(String input) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] encodedHash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
-            return bytesToHex(encodedHash);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Failed to generate hash", e);
-        }
-    }
-
-    private String bytesToHex(byte[] hash) {
-        StringBuilder hexString = new StringBuilder(2 * hash.length);
-        for (byte b : hash) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) {
-                hexString.append('0');
-            }
-            hexString.append(hex);
-        }
-        return hexString.toString();
-    }
 
     /*
      * String value

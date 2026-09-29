@@ -13,6 +13,11 @@ target/
 .springBeans
 .sts4-cache
 
+
+### Environment Variables ###
+.env
+
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -31,3 +36,5 @@ build/
 
 ### VS Code ###
 .vscode/
+
+

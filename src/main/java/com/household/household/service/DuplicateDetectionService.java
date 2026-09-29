@@ -10,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 @Service
 public class DuplicateDetectionService {
 
+    //Find duplicate ac data method
     public String generateRowHash(AcData data) {
         if (data == null) {
             return null;
@@ -24,6 +25,26 @@ public class DuplicateDetectionService {
                 data.getCapacityInTon() != null ? data.getCapacityInTon().toPlainString() : "",
                 data.getInverterNonInverter() != null ? data.getInverterNonInverter().name() : "",
                 String.valueOf(data.getStarRating()),
+                data.getLaunchingPrice() != null ? data.getLaunchingPrice().toPlainString() : ""
+        );
+
+        return generateSHA256(signature);
+    }
+
+
+    //Find duplicate washing machine data method
+    public String generateRowHash(com.household.household.entity.WashingMachineData data) {
+        if (data == null) {
+            return null;
+        }
+
+        String signature = String.join("|",
+                String.valueOf(data.getYear()),
+                data.getBrand() != null ? data.getBrand().name() : "",
+                data.getModelNumber() != null ? data.getModelNumber() : "",
+                data.getWashingType() != null ? data.getWashingType().name() : "",
+                data.getCapacityKg() != null ? data.getCapacityKg().toPlainString() : "",
+                data.getLoadingType() != null ? data.getLoadingType().name() : "",
                 data.getLaunchingPrice() != null ? data.getLaunchingPrice().toPlainString() : ""
         );
 

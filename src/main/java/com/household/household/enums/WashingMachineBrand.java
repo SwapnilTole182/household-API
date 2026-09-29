@@ -1,18 +1,38 @@
 package com.household.household.enums;
 
 public enum WashingMachineBrand {
+    ACER,
     BOSCH,
+    BPL,
+    CANDES,
+    CROMA,
     ELECTROLUX,
     GODREJ,
     HAIER,
+    HISENSE,
     IFB,
+    INTEX,
+    KELVINATOR,
+    KENSTAR,
     LG,
     LLOYD,
+    MARQ,
+    MICROMAX,
+    MIDEA,
+    MITASHI,
+    ONIDA,
     PANASONIC,
     SAMSUNG,
     SIEMENS,
+    SINGER,
+    TCL,
+    THOMSON,
+    TOSHIBA,
+    VIDEOCON,
+    VOLTAS,
     VOLTAS_BEKO,
     WHIRLPOOL,
+    WHITE_WESTINGHOUSE,
     OTHER;
 
     public static WashingMachineBrand fromString(String text) {
