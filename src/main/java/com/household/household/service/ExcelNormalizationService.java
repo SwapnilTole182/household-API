@@ -22,6 +22,18 @@ public class ExcelNormalizationService {
         return data;
     }
 
+    public com.household.household.entity.UsedCarData normalize(com.household.household.entity.UsedCarData data) {
+        if (data == null) {
+            return null;
+        }
+
+        data.setModelName(normalizeString(data.getModelName()));
+        data.setVariant(normalizeString(data.getVariant()));
+        data.setLaunchingPrice(normalizeNumeric(data.getLaunchingPrice()));
+
+        return data;
+    }
+
     private String normalizeString(String value) {
         if (value == null) {
             return null;

@@ -51,6 +51,24 @@ public class DuplicateDetectionService {
         return generateSHA256(signature);
     }
 
+    //Find duplicate used car data method
+    public String generateRowHash(com.household.household.entity.UsedCarData data) {
+        if (data == null) {
+            return null;
+        }
+
+        String signature = String.join("|",
+                data.getCompany() != null ? data.getCompany().name() : "",
+                data.getModelName() != null ? data.getModelName() : "",
+                data.getVariant() != null ? data.getVariant() : "",
+                String.valueOf(data.getLaunchYear()),
+                data.getFuelType() != null ? data.getFuelType().name() : "",
+                data.getLaunchingPrice() != null ? data.getLaunchingPrice().toPlainString() : ""
+        );
+
+        return generateSHA256(signature);
+    }
+
     private String generateSHA256(String input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
