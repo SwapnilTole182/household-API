@@ -63,14 +63,10 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
 
             Sheet sheet = workbook.getSheetAt(0);
 
-            /*
-             * Header validation
-             */
+            //Header validation
             validateHeaders(sheet);
 
-            /*
-             * Start from row 1 because row 0 is header
-             */
+            //Start from row 1 because row 0 is header
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
 
                 Row row = sheet.getRow(i);
@@ -88,20 +84,14 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
 
                     validateData(usedCarData);
 
-                    /*
-                     * Normalize
-                     */
+                    //Normalize
                     usedCarData = excelNormalizationService.normalize(usedCarData);
 
-                    /*
-                     * Generate Hash
-                     */
+                    //Generate Hash
                     String rowHash = duplicateDetectionService.generateRowHash(usedCarData);
                     usedCarData.setRowHash(rowHash);
 
-                    /*
-                     * Intra-file Duplicate check
-                     */
+                    //Intra-file Duplicate check
                     if (!excelRowHashes.add(rowHash)) {
                         duplicateCount++;
                         duplicateRowsResponse.add(
@@ -128,9 +118,7 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
                 }
             }
 
-            /*
-             * Database Duplicate Check
-             */
+            //Database Duplicate Check
             Set<String> existingDbHashes = new HashSet<>();
             if (!allGeneratedHashes.isEmpty()) {
                 existingDbHashes = usedCarDataRepository.findRowHashByRowHashIn(allGeneratedHashes);
@@ -151,9 +139,7 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
                 }
             }
 
-            /*
-             * Save valid unique records
-             */
+            //Save valid unique records
             if (!finalRecordsToSave.isEmpty()) {
                 usedCarDataRepository.saveAll(finalRecordsToSave);
             }
@@ -179,9 +165,7 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
         }
     }
 
-    /*
-     * File validation
-     */
+    //File validation
     private void validateFile(MultipartFile file) {
 
         if (file == null || file.isEmpty()) {
@@ -202,9 +186,7 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
         }
     }
 
-    /*
-     * Header validation
-     */
+    //Header validation
     private void validateHeaders(Sheet sheet) {
 
         Row headerRow = sheet.getRow(0);
@@ -239,9 +221,7 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
         }
     }
 
-    /*
-     * Excel row -> Entity
-     */
+    //Excel row -> Entity
     private UsedCarData convertRowToEntity(Row row) {
 
         return UsedCarData.builder()
@@ -278,9 +258,7 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
                 .build();
     }
 
-    /*
-     * Data validation
-     */
+    //Data validation
     private void validateData(UsedCarData data) {
 
         if (data.getCompany() == null) {
@@ -325,9 +303,7 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
         }
     }
 
-    /*
-     * String value
-     */
+    //String value
     private String getStringValue(Cell cell) {
 
         if (cell == null) {
@@ -344,9 +320,7 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
         return value.trim();
     }
 
-    /*
-     * Integer value
-     */
+    //Integer value
     private Integer getIntegerValue(Cell cell) {
 
         if (cell == null) {
@@ -372,9 +346,7 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
         }
     }
 
-    /*
-     * BigDecimal value
-     */
+    //BigDecimal value
     private BigDecimal getBigDecimalValue(Cell cell) {
 
         if (cell == null) {
@@ -421,9 +393,7 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
         }
     }
 
-    /*
-     * Empty row check
-     */
+    //Empty row check
     private boolean isEmptyRow(Row row) {
 
         if (row == null) {

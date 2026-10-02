@@ -26,22 +26,18 @@ public class WashingMachineResaleCalculationServiceImpl implements WashingMachin
     private static final int PERCENTAGE_SCALE = 2;
     private static final BigDecimal HUNDRED = new BigDecimal("100");
 
-    /**
-     * Customer to Customer depreciation rates by washing type:
-     * FULLY_AUTOMATIC: 18% per year
-     * SEMI_AUTOMATIC: 15% per year
-     * WASHER_DRYER: 15% per year
-     */
+    //Customer to Customer depreciation rates by washing type:
+    //FULLY_AUTOMATIC: 18% per year
+    //SEMI_AUTOMATIC: 15% per year
+    //WASHER_DRYER: 15% per year
     private static final BigDecimal C2C_FULLY_AUTOMATIC_RATE = new BigDecimal("0.18");
     private static final BigDecimal C2C_SEMI_AUTOMATIC_RATE = new BigDecimal("0.15");
     private static final BigDecimal C2C_WASHER_DRYER_RATE = new BigDecimal("0.15");
 
-    /**
-     * Dealer to Customer (resale) depreciation rates by washing type:
-     * FULLY_AUTOMATIC: 13% per year
-     * SEMI_AUTOMATIC: 10% per year
-     * WASHER_DRYER: 10% per year
-     */
+    //Dealer to Customer (resale) depreciation rates by washing type:
+    //FULLY_AUTOMATIC: 13% per year
+    //SEMI_AUTOMATIC: 10% per year
+    //WASHER_DRYER: 10% per year
     private static final BigDecimal D2C_FULLY_AUTOMATIC_RATE = new BigDecimal("0.13");
     private static final BigDecimal D2C_SEMI_AUTOMATIC_RATE = new BigDecimal("0.10");
     private static final BigDecimal D2C_WASHER_DRYER_RATE = new BigDecimal("0.10");

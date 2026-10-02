@@ -66,14 +66,11 @@ public class AcDataImportServiceImpl implements AcDataImportService {
 
             Sheet sheet = workbook.getSheetAt(0);
 
-            /*
-             * Header validation
-             */
+
+            //Execel Header validation
             validateHeaders(sheet);
 
-            /*
-             * Start from row 1 because row 0 is header
-             */
+            //Start from row 1 because row 0 is header
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
 
                 Row row = sheet.getRow(i);
@@ -91,20 +88,17 @@ public class AcDataImportServiceImpl implements AcDataImportService {
 
                     validateData(acData);
 
-                    /*
-                     * Normalize
-                     */
+
+                    //Normalize
                     acData = excelNormalizationService.normalize(acData);
 
-                    /*
-                     * Generate Hash
-                     */
+
+                    //Generate Hash
                     String rowHash = duplicateDetectionService.generateRowHash(acData);
                     acData.setRowHash(rowHash);
 
-                    /*
-                     * Intra-file Duplicate check
-                     */
+
+                    //Intra-file Duplicate check
                     if (!excelRowHashes.add(rowHash)) {
                         duplicateCount++;
                         duplicateRowsResponse.add(
@@ -131,9 +125,8 @@ public class AcDataImportServiceImpl implements AcDataImportService {
                 }
             }
 
-            /*
-             * Database Duplicate Check
-             */
+
+            //Database Duplicate Check
             Set<String> existingDbHashes = new HashSet<>();
             if (!allGeneratedHashes.isEmpty()) {
                 existingDbHashes = acDataRepository.findRowHashByRowHashIn(allGeneratedHashes);
@@ -154,9 +147,7 @@ public class AcDataImportServiceImpl implements AcDataImportService {
                 }
             }
 
-            /*
-             * Save valid unique records
-             */
+            //Save valid unique records
             if (!finalRecordsToSave.isEmpty()) {
                 acDataRepository.saveAll(finalRecordsToSave);
             }
@@ -185,9 +176,7 @@ public class AcDataImportServiceImpl implements AcDataImportService {
         }
     }
 
-    /*
-     * File validation
-     */
+    //File validation
     private void validateFile(MultipartFile file) {
 
         if (file == null || file.isEmpty()) {
@@ -209,9 +198,7 @@ public class AcDataImportServiceImpl implements AcDataImportService {
         }
     }
 
-    /*
-     * Header validation
-     */
+    //Header validation
     private void validateHeaders(Sheet sheet) {
 
         Row headerRow = sheet.getRow(0);
@@ -247,9 +234,7 @@ public class AcDataImportServiceImpl implements AcDataImportService {
         }
     }
 
-    /*
-     * Excel row -> Entity
-     */
+    //Excel row -> Entity
     private AcData convertRowToEntity(Row row) {
 
         return AcData.builder()
@@ -309,9 +294,7 @@ public class AcDataImportServiceImpl implements AcDataImportService {
                 .build();
     }
 
-    /*
-     * Data validation
-     */
+    //Data validation
     private void validateData(AcData data) {
 
         if (data.getYear() == null) {
@@ -371,9 +354,7 @@ public class AcDataImportServiceImpl implements AcDataImportService {
 
 
 
-    /*
-     * String value
-     */
+    //String value
     private String getStringValue(Cell cell) {
 
         if (cell == null) {
@@ -391,9 +372,7 @@ public class AcDataImportServiceImpl implements AcDataImportService {
         return value.trim();
     }
 
-    /*
-     * Integer value
-     */
+    //Integer value
     private Integer getIntegerValue(Cell cell) {
 
         if (cell == null) {
@@ -477,9 +456,7 @@ public class AcDataImportServiceImpl implements AcDataImportService {
         }
     }
 
-    /*
-     * Empty row check
-     */
+    //Empty row check
     private boolean isEmptyRow(Row row) {
 
         if (row == null) {

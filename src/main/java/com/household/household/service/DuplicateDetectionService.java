@@ -16,7 +16,7 @@ public class DuplicateDetectionService {
             return null;
         }
 
-        // Using a distinct delimiter to prevent concatenation collisions
+        // Using a distinct delimiter to prevent concatenation collisions:
         String signature = String.join("|",
                 String.valueOf(data.getYear()),
                 data.getBrand() != null ? data.getBrand().name() : "",
@@ -32,7 +32,7 @@ public class DuplicateDetectionService {
     }
 
 
-    //Find duplicate washing machine data method
+    //Find duplicate washing machine data method:
     public String generateRowHash(com.household.household.entity.WashingMachineData data) {
         if (data == null) {
             return null;
@@ -51,7 +51,7 @@ public class DuplicateDetectionService {
         return generateSHA256(signature);
     }
 
-    //Find duplicate used car data method
+    //Find duplicate used car data method:
     public String generateRowHash(com.household.household.entity.UsedCarData data) {
         if (data == null) {
             return null;
