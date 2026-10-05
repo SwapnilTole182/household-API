@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/ac-resale/**").permitAll()
                 .requestMatchers("/api/ac/depreciation/**").permitAll()
                 .requestMatchers("/api/washing-machine/depreciation/**").permitAll()
+                .requestMatchers("/api/used-car/depreciation/**").permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
             )

@@ -46,6 +46,19 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(UsedCarProductNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUsedCarProductNotFoundException(
+            UsedCarProductNotFoundException ex, WebRequest request) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("USED_CAR_PRODUCT_NOT_FOUND")
+                .message(ex.getMessage())
+                .path(extractPath(request))
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(
             IllegalArgumentException ex, WebRequest request) {
