@@ -1,6 +1,7 @@
 package com.household.household.service;
 
 import com.household.household.entity.AcData;
+import com.household.household.enums.CarFuelType;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -15,7 +16,6 @@ public class ExcelNormalizationService {
 
 
         data.setModelName(normalizeString(data.getModelName()));
-
         data.setCapacityInTon(normalizeNumeric(data.getCapacityInTon()));
         data.setLaunchingPrice(normalizeNumeric(data.getLaunchingPrice()));
 
@@ -30,6 +30,7 @@ public class ExcelNormalizationService {
         data.setModelName(normalizeString(data.getModelName()));
         data.setVariant(normalizeString(data.getVariant()));
         data.setLaunchingPrice(normalizeNumeric(data.getLaunchingPrice()));
+       // data.setFuelType(CarFuelType.valueOf(normalizeString(String.valueOf(data.getFuelType()))));
 
         return data;
     }

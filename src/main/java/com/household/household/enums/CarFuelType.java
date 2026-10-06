@@ -13,6 +13,7 @@ public enum CarFuelType {
     PETROL_STRONG_HYBRID,
     PETROL_ELECTRIC,
     STRONG_HYBRID,
+    DIESEL_MILD_HYBRID,
     OTHER;
 
     public static CarFuelType fromString(String text) {

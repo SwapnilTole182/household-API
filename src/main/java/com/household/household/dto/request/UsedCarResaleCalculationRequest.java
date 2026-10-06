@@ -23,9 +23,7 @@ public class UsedCarResaleCalculationRequest {
     private String modelName;
 
     @NotBlank(message = "Variant is required")
-    private String variant;
-
-
+    private String variant; 
 
     @NotBlank(message = "Fuel type is required")
     private String fuelType;
