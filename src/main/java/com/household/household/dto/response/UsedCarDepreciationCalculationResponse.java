@@ -19,6 +19,7 @@ public class UsedCarDepreciationCalculationResponse {
 
     private String firstYearDepreciation;
     private String subsequentYearRate;
+    private String totalBaseDeductionPercent;
 
     private BigDecimal baseValue;
 
@@ -27,10 +28,12 @@ public class UsedCarDepreciationCalculationResponse {
     private BigDecimal maxAfterCondition;
 
     private Integer totalKmDriven;
-    private String kmDeductionPercent;
+    private String totalKmDeductionPercent;
 
     private String ownership;
-    private String ownershipDeductionPercent;
+    private String totalownershipDeductionPercent;
+
+    private String totalDeductionPercentIncludingBaseAndFinalResale;
 
     private BigDecimal minFinalResaleValue;
     private BigDecimal maxFinalResaleValue;

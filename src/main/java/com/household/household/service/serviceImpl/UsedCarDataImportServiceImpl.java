@@ -4,6 +4,7 @@ import com.household.household.dto.response.ExcelImportResponse;
 import com.household.household.entity.UsedCarData;
 import com.household.household.enums.CarCompany;
 import com.household.household.enums.CarFuelType;
+import com.household.household.enums.CarPremiumStatus;
 import com.household.household.exception.ExcelImportException;
 import com.household.household.repository.UsedCarDataRepository;
 import com.household.household.service.UsedCarDataImportService;
@@ -38,7 +39,8 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
             "variant",
             "launch year",
             "fuel type",
-            "launching price"
+            "launching price",
+            "premium / non-premium"
     };
 
     @Override
@@ -255,6 +257,11 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
                                 row.getCell(5)
                         )
                 )
+                .premiumStatus(
+                        parsePremiumStatus(getStringValue(
+                                row.getCell(6)
+                        ))
+                )
                 .build();
     }
 
@@ -299,6 +306,12 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
                 ) < 0) {
             throw new ExcelImportException(
                     "Launching Price cannot be negative"
+            );
+        }
+
+        if (data.getPremiumStatus() == null) {
+            throw new ExcelImportException(
+                    "Premium / Non-Premium status is required"
             );
         }
     }
@@ -388,6 +401,15 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
         if (value == null) return null;
         try {
             return CarFuelType.fromString(value);
+        } catch (IllegalArgumentException e) {
+            throw new ExcelImportException(e.getMessage());
+        }
+    }
+
+    private CarPremiumStatus parsePremiumStatus(String value) {
+        if (value == null) return null;
+        try {
+            return CarPremiumStatus.fromString(value);
         } catch (IllegalArgumentException e) {
             throw new ExcelImportException(e.getMessage());
         }

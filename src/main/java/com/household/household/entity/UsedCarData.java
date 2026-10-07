@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.household.household.enums.CarCompany;
 import com.household.household.enums.CarFuelType;
+import com.household.household.enums.CarPremiumStatus;
 
 @Entity
 @Table(name = "used_car_data", indexes = {
@@ -46,6 +47,10 @@ public class UsedCarData {
 
     @Column(name = "`Launching Price`")
     private BigDecimal launchingPrice;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "`Premium / Non-Premium`", columnDefinition = "VARCHAR(255)")
+    private CarPremiumStatus premiumStatus;
 
     @JsonIgnore
     @Column(name = "row_hash", unique = true, length = 64)

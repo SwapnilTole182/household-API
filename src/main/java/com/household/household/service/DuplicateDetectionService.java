@@ -63,7 +63,8 @@ public class DuplicateDetectionService {
                 data.getVariant() != null ? data.getVariant() : "",
                 String.valueOf(data.getLaunchYear()),
                 data.getFuelType() != null ? data.getFuelType().name() : "",
-                data.getLaunchingPrice() != null ? data.getLaunchingPrice().toPlainString() : ""
+                data.getLaunchingPrice() != null ? data.getLaunchingPrice().toPlainString() : "",
+                data.getPremiumStatus() != null ? data.getPremiumStatus().name() : ""
         );
 
         return generateSHA256(signature);

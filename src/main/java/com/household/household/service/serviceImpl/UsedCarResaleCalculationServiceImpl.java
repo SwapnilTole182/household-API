@@ -31,9 +31,9 @@ public class UsedCarResaleCalculationServiceImpl implements UsedCarResaleCalcula
     // Subsequent years depreciation: 1% of launching price per year
     private static final BigDecimal SUBSEQUENT_YEAR_DEPRECIATION_RATE = new BigDecimal("0.01");
 
-    // KM deduction: 0.5% per every 10,000 km driven
-    private static final int KM_BRACKET_SIZE = 10000;
-    private static final BigDecimal KM_DEDUCTION_PER_BRACKET = new BigDecimal("0.005");
+    // KM deduction: 0.05% per every 1,000 km driven
+    private static final int KM_BRACKET_SIZE = 1000;
+    private static final BigDecimal KM_DEDUCTION_PER_BRACKET = new BigDecimal("0.0005");
 
     private final UsedCarProductSearchService productSearchService;
     private final Clock clock;
@@ -111,7 +111,7 @@ public class UsedCarResaleCalculationServiceImpl implements UsedCarResaleCalcula
         BigDecimal maxAfterCondition = baseValue.multiply(maxMultiplier).setScale(MONETARY_SCALE, RoundingMode.HALF_UP);
 
         // ── Step 8: Apply KM deduction ──
-        // Every 10,000 km → 0.5% deduction on final value
+        // Every 1,000 km → 0.05% deduction on final value
         int kmBrackets = request.getTotalKmDriven() / KM_BRACKET_SIZE;
         BigDecimal kmDeductionRate = KM_DEDUCTION_PER_BRACKET
                 .multiply(new BigDecimal(kmBrackets));
@@ -145,6 +145,23 @@ public class UsedCarResaleCalculationServiceImpl implements UsedCarResaleCalcula
         String ownershipDeductionPercentStr = ownerDeductionRate
                 .multiply(HUNDRED).setScale(PERCENTAGE_SCALE, RoundingMode.HALF_UP).toPlainString() + "%";
 
+        // ── Total base deduction % = ((launchingPrice - baseValue) / launchingPrice) × 100 ──
+        BigDecimal totalBaseDeduction = launchingPrice.subtract(baseValue)
+                .divide(launchingPrice, 4, RoundingMode.HALF_UP)
+                .multiply(HUNDRED)
+                .setScale(PERCENTAGE_SCALE, RoundingMode.HALF_UP);
+        String totalBaseDeductionPercentStr = totalBaseDeduction.toPlainString() + "%";
+
+        // ── Total deduction % including all adjustments (base + condition + km + ownership) ──
+        // Uses the average of min and max final resale values for the overall deduction
+        BigDecimal avgFinalResale = minFinalResaleValue.add(maxFinalResaleValue)
+                .divide(new BigDecimal("2"), MONETARY_SCALE, RoundingMode.HALF_UP);
+        BigDecimal totalDeduction = launchingPrice.subtract(avgFinalResale)
+                .divide(launchingPrice, 4, RoundingMode.HALF_UP)
+                .multiply(HUNDRED)
+                .setScale(PERCENTAGE_SCALE, RoundingMode.HALF_UP);
+        String totalDeductionPercentStr = totalDeduction.toPlainString() + "%";
+
         log.info("Used Car Depreciation calculation [{}]: launchPrice={}, yearsOfUse={}, " +
                         "baseValue={}, condition={}, minAfterCond={}, maxAfterCond={}, " +
                         "kmDriven={}, kmDeduction={}, owner={}, ownerDeduction={}, " +
@@ -170,14 +187,16 @@ public class UsedCarResaleCalculationServiceImpl implements UsedCarResaleCalcula
                 .yearsOfUse(yearsOfUse)
                 .firstYearDepreciation(firstYearDepreciationStr)
                 .subsequentYearRate(subsequentYearRateStr)
+                .totalBaseDeductionPercent(totalBaseDeductionPercentStr)
                 .baseValue(baseValue)
                 .conditionApplied(request.getCondition().name())
                 .minAfterCondition(minAfterCondition)
                 .maxAfterCondition(maxAfterCondition)
                 .totalKmDriven(request.getTotalKmDriven())
-                .kmDeductionPercent(kmDeductionPercentStr)
+                .totalKmDeductionPercent(kmDeductionPercentStr)
                 .ownership(request.getOwnership().name())
-                .ownershipDeductionPercent(ownershipDeductionPercentStr)
+                .totalownershipDeductionPercent(ownershipDeductionPercentStr)
+                .totalDeductionPercentIncludingBaseAndFinalResale(totalDeductionPercentStr)
                 .minFinalResaleValue(minFinalResaleValue)
                 .maxFinalResaleValue(maxFinalResaleValue)
                 .build();
