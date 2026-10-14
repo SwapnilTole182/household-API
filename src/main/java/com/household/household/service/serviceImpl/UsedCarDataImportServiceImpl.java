@@ -39,7 +39,7 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
             "variant",
             "launch year",
             "fuel type",
-            "launching price",
+            "on-road launching price",
             "premium / non-premium"
     };
 
@@ -207,9 +207,13 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
 
             String expectedHeader = EXPECTED_HEADERS[i];
 
-            if (actualHeader == null ||
-                    !actualHeader.trim()
-                            .equalsIgnoreCase(expectedHeader)) {
+            boolean matches = actualHeader != null && actualHeader.trim().equalsIgnoreCase(expectedHeader);
+            if (!matches && "on-road launching price".equalsIgnoreCase(expectedHeader) && actualHeader != null) {
+                String cleanHeader = actualHeader.trim().toLowerCase();
+                matches = cleanHeader.equals("on road launching price") || cleanHeader.equals("launching price");
+            }
+
+            if (!matches) {
 
                 throw new ExcelImportException(
                         "Invalid header at column "
@@ -252,7 +256,7 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
                                 row.getCell(4)
                         ))
                 )
-                .launchingPrice(
+                .onRoadLaunchingPrice(
                         getBigDecimalValue(
                                 row.getCell(5)
                         )
@@ -300,12 +304,12 @@ public class UsedCarDataImportServiceImpl implements UsedCarDataImportService {
             );
         }
 
-        if (data.getLaunchingPrice() != null &&
-                data.getLaunchingPrice().compareTo(
+        if (data.getOnRoadLaunchingPrice() != null &&
+                data.getOnRoadLaunchingPrice().compareTo(
                         BigDecimal.ZERO
                 ) < 0) {
             throw new ExcelImportException(
-                    "Launching Price cannot be negative"
+                    "On-Road Launching Price cannot be negative"
             );
         }
 

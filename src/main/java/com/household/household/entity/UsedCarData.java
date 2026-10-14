@@ -45,8 +45,8 @@ public class UsedCarData {
     @Column(name = "`Fuel Type`", columnDefinition = "VARCHAR(255)")
     private CarFuelType fuelType;
 
-    @Column(name = "`Launching Price`")
-    private BigDecimal launchingPrice;
+    @Column(name = "`On-Road Launching Price`")
+    private BigDecimal onRoadLaunchingPrice;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "`Premium / Non-Premium`", columnDefinition = "VARCHAR(255)")

@@ -18,5 +18,5 @@ public class UsedCarProductResponse {
     private String variant;
     private Integer launchYear;
     private String fuelType;
-    private BigDecimal launchingPrice;
+    private BigDecimal onRoadLaunchingPrice;
 }

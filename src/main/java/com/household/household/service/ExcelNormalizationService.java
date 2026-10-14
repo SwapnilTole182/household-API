@@ -29,7 +29,7 @@ public class ExcelNormalizationService {
 
         data.setModelName(normalizeString(data.getModelName()));
         data.setVariant(normalizeString(data.getVariant()));
-        data.setLaunchingPrice(normalizeNumeric(data.getLaunchingPrice()));
+        data.setOnRoadLaunchingPrice(normalizeNumeric(data.getOnRoadLaunchingPrice()));
        // data.setFuelType(CarFuelType.valueOf(normalizeString(String.valueOf(data.getFuelType()))));
 
         return data;

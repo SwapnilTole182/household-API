@@ -28,7 +28,7 @@ public class UsedCarResaleCalculationServiceImpl implements UsedCarResaleCalcula
     // First year depreciation: 60%
     private static final BigDecimal FIRST_YEAR_DEPRECIATION_RATE = new BigDecimal("0.60");
 
-    // Subsequent years depreciation: 1% of launching price per year
+    // Subsequent years depreciation: 1% of on-road launching price per year
     private static final BigDecimal SUBSEQUENT_YEAR_DEPRECIATION_RATE = new BigDecimal("0.01");
 
     // KM deduction: 0.05% per every 1,000 km driven
@@ -49,8 +49,8 @@ public class UsedCarResaleCalculationServiceImpl implements UsedCarResaleCalcula
                 request.getFuelType()
         );
 
-        // ── Step 2: Use launching price from DATABASE ──
-        BigDecimal launchingPrice = product.getLaunchingPrice();
+        // ── Step 2: Use on-road launching price from DATABASE ──
+        BigDecimal onRoadLaunchingPrice = product.getOnRoadLaunchingPrice();
         int launchYear = product.getLaunchYear();
 
         // ── Step 3: Get current calendar year dynamically ──
@@ -66,20 +66,20 @@ public class UsedCarResaleCalculationServiceImpl implements UsedCarResaleCalcula
         int yearsOfUse = currentYear - launchYear;
 
         // ── Step 6: Calculate base value using depreciation formula ──
-        // If yearsOfUse <= 1 (0 to 1 year old): baseValue = launchingPrice × (1 - 0.60)
-        // If yearsOfUse > 1:  afterYear1 = launchingPrice × (1 - 0.60)
-        //                     baseValue  = afterYear1 - (launchingPrice × 0.01 × (yearsOfUse - 1))
+        // If yearsOfUse <= 1 (0 to 1 year old): baseValue = onRoadLaunchingPrice × (1 - 0.60)
+        // If yearsOfUse > 1:  afterYear1 = onRoadLaunchingPrice × (1 - 0.60)
+        //                     baseValue  = afterYear1 - (onRoadLaunchingPrice × 0.01 × (yearsOfUse - 1))
         BigDecimal baseValue;
 
         // Apply 60% depreciation for 0 to 1 year old (1 to 12 months)
-        BigDecimal afterYear1 = launchingPrice
+        BigDecimal afterYear1 = onRoadLaunchingPrice
                 .multiply(BigDecimal.ONE.subtract(FIRST_YEAR_DEPRECIATION_RATE));
 
         if (yearsOfUse <= 1) {
             baseValue = afterYear1;
         } else {
-            // Apply 1% of launching price deduction for each year after the 1st year
-            BigDecimal subsequentDeduction = launchingPrice
+            // Apply 1% of on-road launching price deduction for each year after the 1st year
+            BigDecimal subsequentDeduction = onRoadLaunchingPrice
                     .multiply(SUBSEQUENT_YEAR_DEPRECIATION_RATE)
                     .multiply(new BigDecimal(yearsOfUse - 1));
             baseValue = afterYear1.subtract(subsequentDeduction).max(BigDecimal.ZERO);
@@ -145,9 +145,9 @@ public class UsedCarResaleCalculationServiceImpl implements UsedCarResaleCalcula
         String ownershipDeductionPercentStr = ownerDeductionRate
                 .multiply(HUNDRED).setScale(PERCENTAGE_SCALE, RoundingMode.HALF_UP).toPlainString() + "%";
 
-        // ── Total base deduction % = ((launchingPrice - baseValue) / launchingPrice) × 100 ──
-        BigDecimal totalBaseDeduction = launchingPrice.subtract(baseValue)
-                .divide(launchingPrice, 4, RoundingMode.HALF_UP)
+        // ── Total base deduction % = ((onRoadLaunchingPrice - baseValue) / onRoadLaunchingPrice) × 100 ──
+        BigDecimal totalBaseDeduction = onRoadLaunchingPrice.subtract(baseValue)
+                .divide(onRoadLaunchingPrice, 4, RoundingMode.HALF_UP)
                 .multiply(HUNDRED)
                 .setScale(PERCENTAGE_SCALE, RoundingMode.HALF_UP);
         String totalBaseDeductionPercentStr = totalBaseDeduction.toPlainString() + "%";
@@ -156,18 +156,18 @@ public class UsedCarResaleCalculationServiceImpl implements UsedCarResaleCalcula
         // Uses the average of min and max final resale values for the overall deduction
         BigDecimal avgFinalResale = minFinalResaleValue.add(maxFinalResaleValue)
                 .divide(new BigDecimal("2"), MONETARY_SCALE, RoundingMode.HALF_UP);
-        BigDecimal totalDeduction = launchingPrice.subtract(avgFinalResale)
-                .divide(launchingPrice, 4, RoundingMode.HALF_UP)
+        BigDecimal totalDeduction = onRoadLaunchingPrice.subtract(avgFinalResale)
+                .divide(onRoadLaunchingPrice, 4, RoundingMode.HALF_UP)
                 .multiply(HUNDRED)
                 .setScale(PERCENTAGE_SCALE, RoundingMode.HALF_UP);
         String totalDeductionPercentStr = totalDeduction.toPlainString() + "%";
 
-        log.info("Used Car Depreciation calculation [{}]: launchPrice={}, yearsOfUse={}, " +
+        log.info("Used Car Depreciation calculation [{}]: onRoadLaunchingPrice={}, yearsOfUse={}, " +
                         "baseValue={}, condition={}, minAfterCond={}, maxAfterCond={}, " +
                         "kmDriven={}, kmDeduction={}, owner={}, ownerDeduction={}, " +
                         "minFinal={}, maxFinal={}",
                 type,
-                launchingPrice,
+                onRoadLaunchingPrice,
                 yearsOfUse,
                 baseValue,
                 request.getCondition(),

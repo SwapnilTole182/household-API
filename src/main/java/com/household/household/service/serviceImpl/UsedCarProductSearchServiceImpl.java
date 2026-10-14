@@ -41,7 +41,7 @@ public class UsedCarProductSearchServiceImpl implements UsedCarProductSearchServ
                 .variant(usedCarData.getVariant())
                 .launchYear(usedCarData.getLaunchYear())
                 .fuelType(fuelTypeStr)
-                .launchingPrice(usedCarData.getLaunchingPrice())
+                .onRoadLaunchingPrice(usedCarData.getOnRoadLaunchingPrice())
                 .build();
     }
 }

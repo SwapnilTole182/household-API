@@ -1,5 +1,7 @@
 package com.household.household.enums;
 
+import java.text.Normalizer;
+
 public enum CarCompany {
 
     TATA_MOTORS,
@@ -19,43 +21,41 @@ public enum CarCompany {
     CHEVROLET,
     FIAT,
     DATSUN,
-    MERCEDES_BENZ_INDIA,
-    MASERATI_INDIA,
-    MAHINDRA_INDIA,
-    LEXUS_INDIA,
-    LAMBORGHINI_INDIA,
-    KIA_INDIA,
-    JEEP_INDIA,
-    JAGUAR_LAND_ROVER_INDIA,
-    ISUZU_MOTORS_INDIA,
-    HONDA_CARS_INDIA,
-//    GENERAL_MOTORS_INDIA,
-    CHEVROLET_INDIA,
-    FORD_INDIA,
-    FORCE_MOTORS_CARS,
-    FIAT_INDIA_AUTOMOBILES,
-    FERRARI_INDIA,
-    DATSUN_INDIA,
-    CITROEN_INDIA,
-    BYD_INDIA,
-    BMW_INDIA,
-    BENTLEY_MOTORS_INDIA,
-    AUDI_INDIA,
-    ASTON_MARTIN_INDIA,
+    MERCEDES_BENZ,
+    MASERATI,
+    MAHINDRA,
+    LEXUS,
+    LAMBORGHINI,
 
-    MG_MOTOR_INDIA,
-    MINI_INDIA,
-    MITSUBISHI_MOTORS_INDIA,
-    NISSAN_MOTOR_INDIA,
-    PORSCHE_INDIA,
-    RENAULT_INDIA,
-    ROLLS_ROYCE_MOTOR_CARS_INDIA,
-    SKODA_AUTO_INDIA,
-    TESLA_INDIA,
+    JAGUAR_LAND_ROVER,
+    LAND_ROVER,
+    ISUZU,
+    HONDA_CARS,
+    FORCE_MOTORS,
+    FIAT_INDIA_AUTOMOBILES,
+    FERRARI,
+    CITROEN,
+    BYD_MOTORS,
+    BMW,
+    BENTLEY,
+    BENTLEY_MOTORS,
+    AUDI,
+    ASTON_MARTIN,
+
+    MG_MOTOR,
+    MINI,
+    MITSUBISHI_MOTORS,
+    NISSAN_MOTOR,
+    PORSCHE,
+    ROLLS_ROYCE,
+    ROLLS_ROYCE_MOTOR_CARS,
+    SKODA_AUTO,
+    TESLA,
     TOYOTA_KIRLOSKAR_MOTOR,
-    VINFAST_INDIA,
-    VOLKSWAGEN_INDIA,
-    VOLVO_CARS_INDIA,
+    VINFAST,
+    VOLVO,
+    VOLVO_CARS,
+    VINFAST_MOTORS,
 
     OTHER;
 
@@ -63,7 +63,9 @@ public enum CarCompany {
         if (text == null || text.trim().isEmpty()) {
             return null;
         }
-        String normalized = text.trim().toUpperCase().replace(" ", "_").replace("-", "_");
+        String stripped = Normalizer.normalize(text.trim(), Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "");
+        String normalized = stripped.toUpperCase().replace(" ", "_").replace("-", "_");
         for (CarCompany c : CarCompany.values()) {
             if (c.name().equals(normalized)) {
                 return c;

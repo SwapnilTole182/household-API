@@ -63,7 +63,7 @@ public class DuplicateDetectionService {
                 data.getVariant() != null ? data.getVariant() : "",
                 String.valueOf(data.getLaunchYear()),
                 data.getFuelType() != null ? data.getFuelType().name() : "",
-                data.getLaunchingPrice() != null ? data.getLaunchingPrice().toPlainString() : "",
+                data.getOnRoadLaunchingPrice() != null ? data.getOnRoadLaunchingPrice().toPlainString() : "",
                 data.getPremiumStatus() != null ? data.getPremiumStatus().name() : ""
         );
 
